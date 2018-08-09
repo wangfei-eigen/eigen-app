@@ -6,7 +6,6 @@ pipeline {
         stage('CI') {
           steps {
             createSummary(text: 'hello', icon: 'hellow')
-            timeout(unit: 'MINUTES', activity: true, time: 3)
           }
         }
         stage('unittest1') {
