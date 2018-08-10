@@ -1,10 +1,6 @@
-def inc(x):
-    return x + 1
- 
- 
+import  unittest
+assert 1==1
+class TestA(unittest.TestCase):
 
-def test2_hy():
-    assert inc(3) < 5
-
-def test1_hy():
-    assert inc(3) < 5
+    def test_say_hi(self):
+        self.assertEqual(1, 1)
