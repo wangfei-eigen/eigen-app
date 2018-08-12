@@ -1,0 +1,36 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: testwangfei
+  namespace: dev
+  labels:
+    app: testwangfei
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: testwangfei
+        tier: frontend
+    spec:
+      containers:
+      - name: testwangfei
+        image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/testwangfei:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        command:
+        - python3
+        - -m
+        - wangfei
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+      imagePullSecrets:
+      - name: aliyun-registry
+      nodeSelector:
+        role: node
+        env: dev
