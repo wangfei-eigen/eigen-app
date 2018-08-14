@@ -36,7 +36,7 @@ pipeline {
         stage('check') {
           steps {
             echo 'check'
-	    echo "printenv"
+	    sh "printenv"
           }
         }
       }
