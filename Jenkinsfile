@@ -37,6 +37,7 @@ pipeline {
           steps {
             echo 'check'
 	    sh "printenv"
+	    echo "${GIT_BRANCH}"
           }
         }
       }
