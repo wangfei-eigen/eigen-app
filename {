@@ -1,79 +1,0 @@
-Script started on Sun Aug 12 21:51:53 2018
-[?1034hbash-3.2$       docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.c om', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
-bash: syntax error near unexpected token `'https://registry-vpc.cn-hangzhou.aliyuncs.com','
-bash-3.2$                             //def customImage = docker.build("eigenlab /wf-test","--force-rm=true --no-cache=true  ./") 
-bash: syntax error near unexpected token `('
-bash-3.2$                             // customImage.push(${env.BUILD_NUMBER})
-bash: syntax error near unexpected token `('
-bash-3.2$                             customImage.push()
->                             customImage.push('dev')
-bash: syntax error near unexpected token `customImage.push'
-bash-3.2$                         }
-bash: syntax error near unexpected token `}'
-bash-3.2$                 }
-bash: syntax error near unexpected token `}'
-bash-3.2$                 // Clear up the locally built container
-bash: //: is a directory
-bash-3.2$                 sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/e igenlab/testwangfei:dev -f"
-sh: docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/testwangfei:dev -f: No such file or directory
-bash-3.2$                 sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/e igenlab/testwangfei:latest -f"
-sh: docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/testwangfei:latest -f: No such file or directory
-bash-3.2$             }
-bash: syntax error near unexpected token `}'
-bash-3.2$ 
-bash-3.2$ 
-bash-3.2$         }
-bash: syntax error near unexpected token `}'
-bash-3.2$ 
-bash-3.2$ 
-bash-3.2$         stage("Eigen-CD-Deploy-Dev-Test"){
-bash: syntax error near unexpected token `"Eigen-CD-Deploy-Dev-Test"'
-bash-3.2$             agent {
-bash: agent: command not found
-bash-3.2$                 label "slave-10.10.14.114"
-bash: label: command not found
-bash-3.2$             }
-bash: syntax error near unexpected token `}'
-bash-3.2$ 
-bash-3.2$             steps{
-bash: steps{: command not found
-bash-3.2$                 sh "test -f /tmp/wangfei.yaml || exit 20"
-sh: test -f /tmp/wangfei.yaml || exit 20: No such file or directory
-bash-3.2$                 sh "/opt/bin/kubectl -s 10.10.14.111:8080 delete -f /t mp/wangfei.yaml"
-sh: /opt/bin/kubectl -s 10.10.14.111:8080 delete -f /tmp/wangfei.yaml: No such file or directory
-bash-3.2$                 sh "/opt/bin/kubectl -s 10.10.14.111:8080 create -f /t mp/wangfei.yaml"
-sh: /opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmp/wangfei.yaml: No such file or directory
-bash-3.2$             }
-bash: syntax error near unexpected token `}'
-bash-3.2$             
-bash-3.2$ 
-bash-3.2$         }
-bash: syntax error near unexpected token `}'
-bash-3.2$     }
-bash: syntax error near unexpected token `}'
-bash-3.2$ }    }    }    }    sh "/opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmmp/wangfei.yaml"[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cdele
-[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[13Ptest -f /tmp/wangfei.yaml || exit 20"
-[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K  git config --global user.email "you@example.com"
-bash-3.2$   git config --global user.name "Your Name"[C[C[C[C[C[C[C[C[C[C[K  git config --global user.email "you@example.com"[C[C[C[C[C[C[C[C[C[C[C[C  }[Kgit config --global user.email "you@example.com"[H[2Jbash-3.2$   git config --global user.email "you@example.com"[C[C[C[C[C[C[C[C[C[C[K[H[2Jbash-3.2$   git config --global user.email "wangfei1000@yeah.net"
-bash-3.2$   git config --global user.name "wangfei"
-bash-3.2$ history [Kgit push -u oragin master
-fatal: 'oragin' does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-bash-3.2$ git push -u oragin master[1P
-fatal: 'orgin' does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-bash-3.2$ git push -u orgin master[C[1@a
-fatal: 'orgain' does not appear to be a git repository
-fatal: Could not read from remote repository.
-
-Please make sure you have the correct access rights
-and the repository exists.
-bash-3.2$ git push -u orgain master[1P[1P[1P[C[C[C[1P[C[1P[C[1@i[1@g
-Everything up-to-date
-bash-3.2$ 
