@@ -40,11 +40,5 @@ pipeline {
         }
       }
     }
-    stage('generate report') {
-      steps {
-        junit(testResults: 'results.xml', healthScaleFactor: 1)
-        cobertura(coberturaReportFile: 'coverage.xml', sourceEncoding: 'ASCII', failNoReports: true)
-      }
-    }
   }
 }
