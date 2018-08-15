@@ -14,8 +14,8 @@ pipeline{
     // github url and branch
     parameters{
         string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
-        //string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
-        string(name:'repoBranch', defaultValue: "${BRANCH_NAME}", description: 'Branch Specifier')
+        string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
+        //string(name:'repoBranch', defaultValue: "${BRANCH_NAME}", description: 'Branch Specifier')
     }
     
     // github credentials
