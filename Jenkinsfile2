@@ -32,7 +32,7 @@ pipeline{
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
 	  when {
-	      branch 'master'
+	      environment name: 'GIT_BRANCH', value: 'origin/master' 
 	  }
           steps{
               // pull code
