@@ -22,8 +22,11 @@ pipeline{
 //    environment{
 //        CRED_ID = '67b6b6cfa2310294fc3535b9653e094d046d3047'
 //    }
-    
+   
     stages{
+      stage("test"){
+         echo "${GIT_BRANCH}"
+      }
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
 	  when {
