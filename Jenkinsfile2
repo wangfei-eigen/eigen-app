@@ -12,21 +12,23 @@ void setBuildStatus(String message, String state) {
 pipeline{
     agent any 
     // github url and branch
-    parameters{
-        string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
-        string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
+//    parameters{
+//        string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
+//        string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
         //string(name:'repoBranch', defaultValue: "${BRANCH_NAME}", description: 'Branch Specifier')
-    }
+//    }
     
     // github credentials
-    environment{
-        CRED_ID = '67b6b6cfa2310294fc3535b9653e094d046d3047'
-    }
+//    environment{
+//        CRED_ID = '67b6b6cfa2310294fc3535b9653e094d046d3047'
+//    }
     
     stages{
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
-
+	  when {
+	      branch 'master'
+	  }
           steps{
               // pull code
               // git credentialsId:CRED_ID, url:params.repoUrl, branch:params.repoBranch
