@@ -25,8 +25,10 @@ pipeline{
    
     stages{
       stage("test"){
+         steps{
          echo "${GIT_BRANCH}"
       }
+}
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
 	  when {
