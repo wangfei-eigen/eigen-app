@@ -1,0 +1,62 @@
+// set github commit status 
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/wangfei1000/eigen-app.git"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
+pipeline{
+    agent none
+    // github url and branch
+    parameters{
+        string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
+        //string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
+        string(name:'repoBranch', defaultValue: "${BRANCH_NAME}", description: 'Branch Specifier')
+    }
+    
+    // github credentials
+    environment{
+        CRED_ID = '67b6b6cfa2310294fc3535b9653e094d046d3047'
+    }
+    
+    stages{
+      // PR-CI ; all branch
+      stage("Eigen-PR-CI"){
+          agent {
+            label "k8s"
+          }
+
+          steps{
+              // pull code
+              // git credentialsId:CRED_ID, url:params.repoUrl, branch:params.repoBranch
+              checkout scm
+              // build
+              sh "pip3 install -r requirements.txt"
+              // generate report xml
+              sh "py.test --junitxml results.xml --cov webserver --cov-report=xml"
+          }
+
+          post{
+              //success {
+              //    setBuildStatus("Build succeeded", "SUCCESS");
+              //}
+              //failure {
+              //    setBuildStatus("Build failed", "FAILURE");
+              //}
+
+              always{
+                  script{
+                      junit testResults: 'results.xml', healthScaleFactor: 1
+                      cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                  }
+                  // send mail
+                  // send dingding
+              }
+          }
+    }
+  }
+}
