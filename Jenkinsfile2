@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 }
 
 pipeline{
-    agent none
+    agent any 
     // github url and branch
     parameters{
         string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
@@ -26,9 +26,6 @@ pipeline{
     stages{
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
-          agent {
-            label "k8s"
-          }
 
           steps{
               // pull code
