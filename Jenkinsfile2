@@ -23,7 +23,7 @@ pipeline{
 	AGE="18"
     }
     stages{
-      stage("test1-${APPNAME}"){
+      stage("test1-"){
 	environment{
 	    Name = "wangfeihaha"
 	}
@@ -32,7 +32,7 @@ pipeline{
           whateverFunction()
         }
       }
-      stage("test2-${APPNAME}"){
+      stage("test2-"){
 	 environment{
 	    Name = "lisi"
 	 } 	  
