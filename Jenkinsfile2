@@ -27,7 +27,7 @@ pipeline{
       stage("test"){
          steps{
          echo "${GIT_BRANCH}"
-         echo "${APPNAME}"
+         echo "${env.APPNAME}"
       }
 }
       // PR-CI ; all branch
