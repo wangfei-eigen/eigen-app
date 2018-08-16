@@ -9,6 +9,14 @@ void setBuildStatus(String message, String state) {
   ]);
 }
 
+void eigen-build(){
+	sh '''
+	   date
+	   ifconfig
+           ip addr		
+	'''
+}
+
 pipeline{
     agent any 
     // github url and branch
@@ -29,6 +37,7 @@ pipeline{
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
          echo "${GIT_URL}"
+         eigen-build()
       }
 }
       // PR-CI ; all branch
