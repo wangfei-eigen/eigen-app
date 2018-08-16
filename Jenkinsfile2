@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 }
 void whateverFunction() {
     sh '''
-    	echo "my name is ${Name},age :${env.AGE}"
+    	echo "my name is ${Name},age :${AGE}"
 	date
 	ifconfig
     '''
