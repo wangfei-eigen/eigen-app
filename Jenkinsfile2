@@ -70,97 +70,99 @@ pipeline{
                 checkout scm
             }
         }
-        parallel {
-            // PR-CI ; all branch
-            stage("Eigen-PR-CI"){
+        stage("Eigen-CI"){
+            parallel {
+                // PR-CI ; all branch
+                stage("Eigen-PR-CI"){
 
-                steps{
-                    // ci build
-                    PR_CI_FUNCTION()
-                }
-
-               post{
-                    //success {
-                    //    setBuildStatus("Build succeeded", "SUCCESS");
-                    //}
-                    //failure {
-                    //    setBuildStatus("Build failed", "FAILURE");
-                    //}
-                    always{
-                        // send msg
-                        SEND_MAIL_DD()
+                    steps{
+                        // ci build
+                        PR_CI_FUNCTION()
                     }
-               }
-            }
 
-            stage("Generate CI Report"){
-                steps{
-                    script{
-                        junit testResults: 'results.xml', healthScaleFactor: 1
-                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                   post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+                        always{
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
+                   }
+                }
+
+                stage("Generate CI Report"){
+                    steps{
+                        script{
+                            junit testResults: 'results.xml', healthScaleFactor: 1
+                            cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                        }
                     }
                 }
-            }
 
 
-            //Dev-CI
-            stage("Eigen-CI-Dev"){
+                //Dev-CI
+                stage("Eigen-CI-Dev"){
 
-                when{
-                    //branch 'dev'
-                    environment name: 'GIT_BRANCH', value: 'origin/dev'
-                }
-
-                steps{
-                    // pull code
-                    //sh "git clean -fdx"
-                    //checkout scm
-                    // build
-                    CI_FUNCTION()
-                }
-
-                post{
-                    //success {
-                    //    setBuildStatus("Build succeeded", "SUCCESS");
-                    //}
-                    //failure {
-                    //    setBuildStatus("Build failed", "FAILURE");
-                    //}
-                    always{
-                        // send msg
-                        SEND_MAIL_DD()
+                    when{
+                        //branch 'dev'
+                        environment name: 'GIT_BRANCH', value: 'origin/dev'
                     }
-                }   
-            }
 
+                    steps{
+                        // pull code
+                        //sh "git clean -fdx"
+                        //checkout scm
+                        // build
+                        CI_FUNCTION()
+                    }
 
-            //Prod-CI
-            stage("Eigen-CI-Prod"){
-
-                when{
-                    //branch 'master'
-                    environment name: 'GIT_BRANCH', value: 'origin/master'
+                    post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+                        always{
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
+                    }   
                 }
 
-                steps{
-                    // pull code
-                    //sh "git clean -fdx"
-                    //checkout scm
 
-                    // build
-                    CI_FUNCTION()
-                }
+                //Prod-CI
+                stage("Eigen-CI-Prod"){
 
-                post{
-                    //success {
-                    //    setBuildStatus("Build succeeded", "SUCCESS");
-                    //}
-                    //failure {
-                    //    setBuildStatus("Build failed", "FAILURE");
-                    //}
-                    always{
-                        // send msg
-                        SEND_MAIL_DD()
+                    when{
+                        //branch 'master'
+                        environment name: 'GIT_BRANCH', value: 'origin/master'
+                    }
+
+                    steps{
+                        // pull code
+                        //sh "git clean -fdx"
+                        //checkout scm
+
+                        // build
+                        CI_FUNCTION()
+                    }
+
+                    post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+                        always{
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
                     }
                 }
             }
