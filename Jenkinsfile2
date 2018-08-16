@@ -15,36 +15,24 @@ void whateverFunction() {
 	ifconfig
     '''
 }
-
 pipeline{
     agent any 
-    // github url and branch
-    parameters{
-        string(name:'repoUrl', defaultValue: 'https://github.com/wangfei1000/eigen-app.git', description: 'Repository URL')
-       string(name:'repoBranch', defaultValue: 'master', description: 'Branch Specifier')
-//        string(name:'repoBranch', defaultValue: "${GIT_BRANCH}", description: 'Branch Specifier')
-    }
-    
     // github credentials
     environment{
         APPNAME = "eigen-app" 
 	AGE="18"
     }
-   
     stages{
-      stage("test"){
+      stage("test1-${APPNAME}"){
 	environment{
 	    Name = "wangfeihaha"
 	}
-         steps{
-         echo "${GIT_BRANCH}"
-         echo "${env.APPNAME}"
-         echo "${GIT_URL}"
-         whateverFunction()
+        steps{
+          echo "${GIT_URL}"
+          whateverFunction()
+        }
       }
-}
-      // PR-CI ; all branch
-      stage("Eigen-PR-CI"){
+      stage("test2-${APPNAME}"){
 	 environment{
 	    Name = "lisi"
 	 } 	  
@@ -53,32 +41,10 @@ pipeline{
 	  }
           steps{
               // pull code
-              // git credentialsId:CRED_ID, url:params.repoUrl, branch:params.repoBranch
+	      sh 'git clean -fdx'
               checkout scm
-              // build
-              //sh "pip3 install -r requirements.txt"
-              // generate report xml
-              //sh "py.test --junitxml results.xml --cov webserver --cov-report=xml"
 	      sh 'printenv'
-	      whateverFunction()
-          }
-
-          post{
-              //success {
-              //    setBuildStatus("Build succeeded", "SUCCESS");
-              //}
-              //failure {
-              //    setBuildStatus("Build failed", "FAILURE");
-              //}
-
-              always{
-                  script{
-                      junit testResults: 'results.xml', healthScaleFactor: 1
-                      cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                  }
-                  // send mail
-                  // send dingding
-              }
+	      //whateverFunction()
           }
     }
   }
