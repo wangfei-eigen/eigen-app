@@ -45,7 +45,10 @@ pipeline{
 }
       // PR-CI ; all branch
       stage("Eigen-PR-CI"){
-	  when {
+	 environment{
+	    Name = "lisi"
+	 } 	  
+	 when {
 	      environment name: 'GIT_BRANCH', value: 'origin/master' 
 	  }
           steps{
@@ -53,10 +56,11 @@ pipeline{
               // git credentialsId:CRED_ID, url:params.repoUrl, branch:params.repoBranch
               checkout scm
               // build
-              sh "pip3 install -r requirements.txt"
+              //sh "pip3 install -r requirements.txt"
               // generate report xml
-              sh "py.test --junitxml results.xml --cov webserver --cov-report=xml"
+              //sh "py.test --junitxml results.xml --cov webserver --cov-report=xml"
 	      sh 'printenv'
+	      whateverFunction()
           }
 
           post{
