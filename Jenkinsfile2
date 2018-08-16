@@ -32,8 +32,8 @@ pipeline{
    
     stages{
       stage("test"){
+	 def Name = "wangfeihahahaha"
          steps{
-	def Name="wangfeihahahaha"
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
          echo "${GIT_URL}"
