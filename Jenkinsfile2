@@ -16,14 +16,14 @@ void whateverFunction() {
     '''
 }
 pipeline{
-    agent any 
+    agent any
     // github credentials
     environment{
         APPNAME = "eigen-app" 
 	AGE="18"
     }
     stages{
-      stage("test1-"){
+      stage("test1-${APPNAME}"){
 	environment{
 	    Name = "wangfeihaha"
 	}
