@@ -16,7 +16,7 @@ void whateverFunction() {
     '''
 }
 pipeline{
-    agent ${AGENT}
+    agent any 
     // github credentials
     environment{
         APPNAME = "eigen-app" 
