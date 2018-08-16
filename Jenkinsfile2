@@ -1,7 +1,10 @@
 // set github commit status 
 
-void eigen-build(){
-	sh "date"
+#void eigen-build() {
+#	sh "date"
+#}
+void whateverFunction() {
+    sh 'ls /'
 }
 
 pipeline{
