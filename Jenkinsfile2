@@ -46,9 +46,9 @@ void CI_FUNCTION() {
 //CD DEPLOY
 void CD_DEPLOY_FUNCTION() {
     sh ''' 
-        test -f /tmp/wangfei.yaml || exit 20"
-        /opt/bin/kubectl -s 10.10.14.111:8080 delete -f /tmp/wangfei.yaml"
-        /opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmp/wangfei.yaml"
+        test -f /tmp/wangfei.yaml || exit 20
+        /opt/bin/kubectl -s 10.10.14.111:8080 delete -f /tmp/wangfei.yaml
+        /opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmp/wangfei.yaml
     ''' 
 }
 
