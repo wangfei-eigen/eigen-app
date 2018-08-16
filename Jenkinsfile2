@@ -8,45 +8,244 @@ void setBuildStatus(String message, String state) {
       statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
   ]);
 }
-void whateverFunction() {
-    sh '''
-    	echo "my name is ${Name},age :${AGE}"
-	date
-	ifconfig
-    '''
+
+// Send Mail and DingDing
+void SEND_MAIL_DD() {
+    // mail
+    script{
+      emailext subject: '$DEFAULT_SUBJECT',
+            body: '$DEFAULT_CONTENT',
+            recipientProviders: [
+                [$class: 'CulpritsRecipientProvider'],
+                [$class: 'DevelopersRecipientProvider'],
+                [$class: 'RequesterRecipientProvider']
+            ], 
+            replyTo: '$DEFAULT_REPLYTO',
+            to: '$DEFAULT_RECIPIENTS'
+    }
+    // DingDing
 }
+
+// PR-CI
+void PR_CI_FUNCTION() {
+    sh '''
+        pip3 install -r requirements.txt
+        py.test --junitxml results.xml --cov webserver --cov-report=xml
+    ''' 
+}
+
+// CI
+void CI_FUNCTION() {
+    sh ''' 
+        pip3 install -r requirements.txt
+        python3 -m unittest wangfei.py
+    ''' 
+}
+
+//CD DEPLOY
+void CD_DEPLOY_FUNCTION() {
+    sh ''' 
+        test -f /tmp/wangfei.yaml || exit 20"
+        /opt/bin/kubectl -s 10.10.14.111:8080 delete -f /tmp/wangfei.yaml"
+        /opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmp/wangfei.yaml"
+    ''' 
+}
+
 pipeline{
-    agent any 
-    // github credentials
+   // agent none
+    agent {
+        label "k8s"
+    }
+
     environment{
-        APPNAME = "eigen-app" 
-	AGE="18"
-	AGENT="any"
+        APPNAME = "eigen-app-test"
     }
+    
     stages{
-      stage("test1-}"){
-	environment{
-	    Name = "wangfeihaha"
-	}
-        steps{
-          echo "${GIT_URL}"
-          whateverFunction()
+        stage("Eigen-CI"){
+
+            parallel {
+                // PR-CI ; all branch
+                stage("Eigen-PR-CI"){
+
+                    steps{
+                        // pull code
+                        sh "git clean -fdx"
+                        checkout scm
+                        // ci build
+                        PR_CI_FUNCTION()
+                    }
+
+                    post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+
+                        //always{
+                            script{
+                                junit testResults: 'results.xml', healthScaleFactor: 1
+                                cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                            }
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
+                    }
+                }
+
+                //Dev-CI
+                stage("Eigen-CI-Dev"){
+
+                    when{
+                        //branch 'dev'
+                        environment name: 'GIT_BRANCH', value: 'origin/dev'
+                    }
+
+                    steps{
+                        // pull code
+                        sh "git clean -fdx"
+                        checkout scm
+                        // build
+                        CI_FUNCTION()
+                    }
+
+                    post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+                        always{
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
+                    }   
+                }
+
+                //Prod-CI
+                stage("Eigen-CI-Prod"){
+
+                    when{
+                        //branch 'master'
+                        environment name: 'GIT_BRANCH', value: 'origin/master'
+                    }
+
+                    steps{
+                        // pull code
+                        sh "git clean -fdx"
+                        checkout scm
+
+                        // build
+                        CI_FUNCTION()
+                    }
+
+                    post{
+                        //success {
+                        //    setBuildStatus("Build succeeded", "SUCCESS");
+                        //}
+                        //failure {
+                        //    setBuildStatus("Build failed", "FAILURE");
+                        //}
+                        always{
+                            // send msg
+                            SEND_MAIL_DD()
+                        }
+                    }
+                }
+            }
         }
-      }
-      stage("test2-"){
-	 environment{
-	    Name = "lisi"
-	 } 	  
-	 when {
-	      environment name: 'GIT_BRANCH', value: 'origin/master' 
-	  }
-          steps{
-              // pull code
-	      sh 'git clean -fdx'
-              checkout scm
-	      sh 'printenv'
-	      //whateverFunction()
-          }
+
+        // Dev-build
+        stage("Eigen-CD-Build-Dev"){
+
+            when{
+                //branch 'dev'
+                environment name: 'GIT_BRANCH', value: 'origin/dev'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            steps{
+               //pull 
+               sh "git clean -fdx"
+               checkout scm
+               //docker build and publish
+               script {
+                        docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.com', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
+                            def customImage = docker.build("eigenlab/${APPNAME}","--force-rm=true --no-cache=true  ./")
+                            customImage.push()
+                            customImage.push('dev')
+                        }
+                }
+                // Clear up the locally built container
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:dev -f"
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:latest -f"
+            }
+        }
+
+        // Prod-build
+        stage("Eigen-CD-Build-Prod"){
+            when{
+                //branch 'master'
+                environment name: 'GIT_BRANCH', value: 'origin/master'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            steps{
+               //pull 
+               sh "git clean -fdx"
+               checkout scm
+               //docker build and publish
+               script {
+                        docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.com', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
+                            def customImage = docker.build("eigenlab/${APPNAME}","--force-rm=true --no-cache=true  ./")
+                            customImage.push()
+                            customImage.push('prod')
+                        }
+                }
+                // Clear up the locally built container
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:dev -f"
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:latest -f"
+            }
+        }       
+
+        // Dev-Deploy
+        stage("Eigen-CD-Deploy-Dev"){
+            when{
+                //branch 'dev'
+                environment name: 'GIT_BRANCH', value: 'origin/dev'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            environment{
+                ENVBRANCH = "dev"
+            }
+
+            steps{
+                CD_DEPLOY_FUNCTION()
+            }
+        }
+
+        // Prod-Deploy
+        stage("Eigen-CD-Deploy-Prod"){
+            when{
+                //branch 'master'
+                environment name: 'GIT_BRANCH', value: 'origin/master'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            environment{
+                ENVBRANCH = "prod"
+            }            
+            steps{
+                CD_DEPLOY_FUNCTION()
+            }
+        }
     }
-  }
 }
