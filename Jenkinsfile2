@@ -1,11 +1,7 @@
 // set github commit status 
 
 void eigen-build(){
-	sh '''
-	   date
-	   ifconfig
-           ip addr		
-	'''
+	sh "date"
 }
 
 pipeline{
