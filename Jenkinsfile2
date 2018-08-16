@@ -89,7 +89,7 @@ pipeline{
            }
         }
 
-        stage("Generate Report"){
+        stage("Generate CI Report"){
             setps{
                 script{
                     junit testResults: 'results.xml', healthScaleFactor: 1
