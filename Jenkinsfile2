@@ -28,6 +28,7 @@ pipeline{
          steps{
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
+         echo "${GIT_URL}"
       }
 }
       // PR-CI ; all branch
