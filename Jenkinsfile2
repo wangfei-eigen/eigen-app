@@ -186,5 +186,32 @@ pipeline{
                 sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:latest -f"
             }
         }
+
+        stage("Eigen-CD-Build-Prod"){
+            when{
+                //branch 'master'
+                environment name: 'GIT_BRANCH', value: 'origin/master'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            steps{
+               //pull 
+               sh "git clean -fdx"
+               checkout scm
+               //docker build and publish
+               script {
+                        docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.com', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
+                            def customImage = docker.build("eigenlab/${APPNAME}","--force-rm=true --no-cache=true  ./")
+                            customImage.push()
+                            customImage.push('prod')
+                        }
+                }
+                // Clear up the locally built container
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:dev -f"
+                sh "docker rmi registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/${APPNAME}:latest -f"
+            }
+        }
+        
     }
 }
