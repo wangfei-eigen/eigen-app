@@ -112,7 +112,7 @@ pipeline{
             steps{
                 // pull code
                 //sh "git clean -fdx"
-                #checkout scm
+                //checkout scm
                 // build
                 CI_FUNCTION()
             }
