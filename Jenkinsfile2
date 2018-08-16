@@ -213,5 +213,40 @@ pipeline{
             }
         }
         
+        // Dev-Deploy
+        stage("Eigen-CD-Deploy-Dev"){
+            when{
+                //branch 'dev'
+                environment name: 'GIT_BRANCH', value: 'origin/dev'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            environment{
+                ENVBRANCH = "dev"
+            }
+
+            steps{
+                CD_DEPLOY_FUNCTION()
+            }
+        }
+
+        // Prod-Deploy
+        stage("Eigen-CD-Deploy-Prod"){
+            when{
+                //branch 'master'
+                environment name: 'GIT_BRANCH', value: 'origin/master'
+            }
+            agent {
+                label "slave-10.10.14.114"
+            }
+            environment{
+                ENVBRANCH = "prod"
+            }            
+            steps{
+                CD_DEPLOY_FUNCTION()
+            }
+        }
+
     }
 }
