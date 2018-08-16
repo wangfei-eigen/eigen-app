@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 }
 void whateverFunction() {
     sh '''
-    	echo "my name is ${Name}"
+    	echo "my name is ${env.Name}"
 	date
 	ifconfig
     '''
@@ -32,7 +32,9 @@ pipeline{
    
     stages{
       stage("test"){
-	 def Name = "wangfeihahahaha"
+	environment{
+	    Name = "wangfeihaha"
+	}
          steps{
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
