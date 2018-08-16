@@ -111,8 +111,8 @@ pipeline{
 
             steps{
                 // pull code
-                sh "git clean -fdx"
-                checkout scm
+                //sh "git clean -fdx"
+                #checkout scm
                 // build
                 CI_FUNCTION()
             }
@@ -174,8 +174,8 @@ pipeline{
             }
             steps{
                //pull 
-               sh "git clean -fdx"
-               checkout scm
+               //sh "git clean -fdx"
+               //checkout scm
                //docker build and publish
                script {
                     docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.com', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
