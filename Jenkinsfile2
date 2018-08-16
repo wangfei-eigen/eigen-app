@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 }
 void whateverFunction() {
     sh '''
-    	echo "my name is ${Name}"
+    	echo "my name is ${Name},age :${env.AGE}"
 	date
 	ifconfig
     '''
@@ -28,6 +28,7 @@ pipeline{
     // github credentials
     environment{
         APPNAME = "eigen-app" 
+	AGE="18"
     }
    
     stages{
