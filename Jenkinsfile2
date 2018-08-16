@@ -10,7 +10,7 @@ void setBuildStatus(String message, String state) {
 }
 void whateverFunction() {
     sh '''
-    	ls /
+    	echo "my name is ${Name}"
 	date
 	ifconfig
     '''
@@ -33,6 +33,7 @@ pipeline{
     stages{
       stage("test"){
          steps{
+	def Name="wangfeihahahaha"
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
          echo "${GIT_URL}"
