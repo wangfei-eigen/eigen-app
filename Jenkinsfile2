@@ -1,8 +1,4 @@
 // set github commit status 
-
-#void eigen-build() {
-#	sh "date"
-#}
 void whateverFunction() {
     sh 'ls /'
 }
@@ -27,7 +23,7 @@ pipeline{
          echo "${GIT_BRANCH}"
          echo "${env.APPNAME}"
          echo "${GIT_URL}"
-         eigen-build()
+         whateverFunction()
       }
 }
       // PR-CI ; all branch
