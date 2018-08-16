@@ -20,13 +20,14 @@ pipeline{
     
     // github credentials
     environment{
-        CRED_ID = '67b6b6cfa2310294fc3535b9653e094d046d3047'
+        APPNAME = "eigen-app" 
     }
    
     stages{
       stage("test"){
          steps{
          echo "${GIT_BRANCH}"
+         echo "${APPNAME}"
       }
 }
       // PR-CI ; all branch
