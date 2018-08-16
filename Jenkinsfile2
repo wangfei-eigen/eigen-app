@@ -9,7 +9,11 @@ void setBuildStatus(String message, String state) {
   ]);
 }
 void whateverFunction() {
-    sh 'ls /'
+    sh '''
+    	ls /
+	date
+	ifconfig
+    '''
 }
 
 pipeline{
