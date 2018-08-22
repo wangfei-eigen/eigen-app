@@ -53,29 +53,30 @@ void CD_DEPLOY_FUNCTION() {
 }
 
 pipeline{
-   // agent none
-    agent {
-        label "k8s"
-    }
-
+    agent none
     environment{
         APPNAME = "eigen-app-test"
     }
     
     stages{
-
-        stage("Pull Code"){
-            steps{
-                sh "git clean -fdx"
-                checkout scm
-            }
-        }
+        //stage("Pull Code"){//
+        //    steps{
+        //        sh "git clean -fdx"
+        //        checkout scm
+        //    }
+        //}
         stage("Eigen-CI"){
             parallel {
                 // PR-CI ; all branch
                 stage("Eigen-PR-CI"){
+                    agent {
+                        label "k8s"
+                    }
 
                     steps{
+			sh "id ; w"
+                        sh "git clean -fdx"
+                        checkout scm
                         // ci build
                         PR_CI_FUNCTION()
                     }
@@ -98,14 +99,16 @@ pipeline{
                 stage("Eigen-CI-Dev"){
 
                     when{
-                        //branch 'dev'
+                        //branch //'dev'
                         environment name: 'GIT_BRANCH', value: 'origin/dev'
                     }
-
+                    agent {
+                        label "k8s"
+                    }
                     steps{
                         // pull code
-                        //sh "git clean -fdx"
-                        //checkout scm
+                        sh "git clean -fdx"
+                        checkout scm
                         // build
                         CI_FUNCTION()
                     }
@@ -124,7 +127,6 @@ pipeline{
                     }   
                 }
 
-
                 //Prod-CI
                 stage("Eigen-CI-Prod"){
 
@@ -132,11 +134,13 @@ pipeline{
                         //branch 'master'
                         environment name: 'GIT_BRANCH', value: 'origin/master'
                     }
-
+                    agent {
+                        label "k8s"
+                    }
                     steps{
                         // pull code
-                        //sh "git clean -fdx"
-                        //checkout scm
+                        sh "git clean -fdx"
+                        checkout scm
 
                         // build
                         CI_FUNCTION()
@@ -150,6 +154,10 @@ pipeline{
                         //    setBuildStatus("Build failed", "FAILURE");
                         //}
                         always{
+                            script{
+                                junit testResults: 'results.xml', healthScaleFactor: 1
+                                cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                            }
                             // send msg
                             SEND_MAIL_DD()
                         }
@@ -158,14 +166,14 @@ pipeline{
             }
         }
 
-        stage("Generate CI Report"){
-            steps{
-                script{
-                    junit testResults: 'results.xml', healthScaleFactor: 1
-                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                }
-            }
-        }
+        //stage("Generate CI Report"){
+        //    steps{
+        //        script{
+        //            junit testResults: 'results.xml', healthScaleFactor: 1
+        //            cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', //conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, //0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', //zoomCoverageChart: false
+        //        }
+        //    }
+        //}
         
         // Dev-build
         stage("Eigen-CD-Build-Dev"){
@@ -179,8 +187,8 @@ pipeline{
             }
             steps{
                //pull 
-               //sh "git clean -fdx"
-               //checkout scm
+               sh "git clean -fdx"
+               checkout scm
                //docker build and publish
                script {
                     docker.withRegistry('https://registry-vpc.cn-hangzhou.aliyuncs.com', '500e48df-e249-46b1-8aeb-6e9f1b4d58d0') {
@@ -230,6 +238,7 @@ pipeline{
             agent {
                 label "slave-10.10.14.114"
             }
+            
             environment{
                 ENVBRANCH = "dev"
             }
