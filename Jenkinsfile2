@@ -75,6 +75,8 @@ pipeline{
 
                     steps{
 			sh "id ; w"
+			sh "pwd;ls https://github.com/EigenLab/k8s -l"
+			sh "ls -d https://github.com/EigenLab/k8s -l"
                         sh "git clean -fdx"
                         checkout scm
                         // ci build
