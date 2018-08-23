@@ -1,36 +1,8 @@
-pipeline {
-  agent {
-    kubernetes {
-      label 'k8s-jnlp-test'
-      defaultContainer 'eigen-jnlp-slave'
-
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: dev
-  labels:
-    app: jnlp
-    owner: test-jnlp
-
-spec:
-  containers:
-  - name: jnlp-base
-    image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave:latest
-    privileged: true
-  imagePullSecrets: 
-  - name: aliyun-registry
-"""
-    }
-  }
-
-  stages {
-    stage('test') {
-      steps {
-        container('jnlp-base') {
-          sh 'echo hellow'
+def label = "jnlp-slave"
+podTemplate(label: label) {
+    node(label) {
+        stage('Run shell') {
+            sh 'echo hello world'
         }
-      }
     }
-  }
 }
