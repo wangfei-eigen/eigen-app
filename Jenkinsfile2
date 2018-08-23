@@ -30,9 +30,8 @@ void SEND_MAIL_DD() {
 // PR-CI
 void PR_CI_FUNCTION() {
     sh '''
-        pip3 install -r requirements.txt
-	sleep 400 
-        py.test --junitxml results.xml --cov webserver --cov-report=xml
+        
+       sleep 120 
     ''' 
 }
 
