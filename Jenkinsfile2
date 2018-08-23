@@ -5,6 +5,7 @@ podTemplate(label: label) {
             sh 'echo hello world'
 	    sh "pwd"
             sh "id"
+            sh "kubectl get node"
 	    sh "sleep 600"
         }
     }
