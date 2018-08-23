@@ -21,6 +21,9 @@ spec:
     privileged: true
   imagePullSecrets: 
   - name: aliyun-registry
+  volumeMounts:
+        - mountPath: /var/run/docker.sock
+        - hostPath: /var/run/docker.sock
 """
     }
   }
