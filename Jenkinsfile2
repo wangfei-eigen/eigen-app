@@ -1,4 +1,4 @@
-def label = "jnlp-slave"
+def label = "eigen-jnlp-slave"
 podTemplate(label: label) {
     node(label) {
         stage('Run shell') {
