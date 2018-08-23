@@ -1,9 +1,8 @@
 pipeline {
-
   agent {
     kubernetes {
       label 'k8s-jnlp-test'
-      defaultContainer 'eigen-jnlp-slave'
+      defaultContainer 'jnlp'
 
       yaml """
 apiVersion: v1
@@ -21,9 +20,6 @@ spec:
     privileged: true
   imagePullSecrets: 
   - name: aliyun-registry
-  volumeMounts:
-        - mountPath: /var/run/docker.sock
-        - hostPath: /var/run/docker.sock
 """
     }
   }
