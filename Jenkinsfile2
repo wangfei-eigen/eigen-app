@@ -1,9 +1,37 @@
-def label = "mypod-${UUID.randomUUID().toString()}"
-podTemplate(label: label) {
-  node(label) {
-    stage('Run shell') {
-      container('mycontainer') {
-        sh 'echo hello world'
+pipeline {
+
+  agent {
+
+    kubernetes {
+      label 'k8s-jnlp-test
+      defaultContainer 'jnlp-base'
+
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: dev
+  labels:
+    app: jnlp
+    owner: test-jnlp
+
+spec:
+  containers:
+  - name: jnlp-base
+    image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave-base:latest
+    tty: true
+    privileged: true
+  imagePullSecrets: aliyun-securt
+"""
+    }
+  }
+
+  stages {
+    stage('test') {
+      steps {
+        container('jnlp-base') {
+          sh 'echo hellow'
+        }
       }
     }
   }
