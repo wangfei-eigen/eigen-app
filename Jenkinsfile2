@@ -3,6 +3,9 @@ podTemplate(label: label) {
     node(label) {
         stage('Run shell') {
             sh 'echo hello world'
+	    sh "pwd"
+            sh "id"
+	    sh "sleep 600"
         }
     }
 }
