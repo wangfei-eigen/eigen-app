@@ -19,7 +19,7 @@ spec:
     image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave:latest
     privileged: true
   imagePullSecrets: 
-  - name: aliyun-registry
+  - name: liyun-registry
 """
     }
   }
