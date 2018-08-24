@@ -43,6 +43,7 @@ spec:
       stage("Eigen-PR-CI"){
           steps{
             sh "echo hellow"
+	    sh "id;pwd"
           }
       }
   }
