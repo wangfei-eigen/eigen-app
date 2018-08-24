@@ -19,6 +19,7 @@ spec:
     image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave:latest
     command:
     - cat 
+    tty: true
     volumeMounts:
     - mountPath: /var/run/docker.sock
       name: docker-sock-volume
