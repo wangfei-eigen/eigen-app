@@ -38,14 +38,13 @@ spec:
 
   stages {
     stage('test') {
-      steps {
-        container('jnlp-base') {
+      container('jnlp-base') {
+        steps {
           sh 'echo hellow'
           sh "pwd"
           sh "id"
           sh "ls -l /opt/k8s-deploy/config"
           sh "ls -l /opt/k8s-deploy/configGenerator"
-          
           sh "sleep 600"
         }
       }
