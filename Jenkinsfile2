@@ -24,7 +24,7 @@ spec:
   - name: aliyun-registry
   volumeMounts:
     - mountPath: /var/run
-     name: docker-sock
+      name: docker-sock
 """
     }
   }
