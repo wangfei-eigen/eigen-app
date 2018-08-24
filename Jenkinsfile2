@@ -18,7 +18,7 @@ spec:
   - name: jnlp-base
     image: registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave:latest
     command:
-    - jenkins-slave 
+    - cat 
     volumeMounts:
     - mountPath: /var/run/docker.sock
       name: docker-sock-volume
