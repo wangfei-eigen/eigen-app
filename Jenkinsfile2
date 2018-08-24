@@ -31,6 +31,10 @@ spec:
       steps {
         container('jnlp-base') {
           sh 'echo hellow'
+          sh "pwd"
+          sh "id"
+          sh "kubectl get node"
+          sh "sleep 600"
         }
       }
     }
