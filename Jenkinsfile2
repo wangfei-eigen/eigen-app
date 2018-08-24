@@ -102,10 +102,8 @@ spec:
 
         stage("Pull Code"){
             steps{
-                container('jnlp-base') {
-                    sh "git clean -fdx"
-                    checkout scm
-                }
+                sh "git clean -fdx"
+                checkout scm
             }
         }
 
@@ -113,10 +111,8 @@ spec:
         stage("Eigen-PR-CI"){
 
             steps{
-                container('jnlp-base') {
-                    // ci build
-                    PR_CI_FUNCTION()
-                }
+                // ci build
+                PR_CI_FUNCTION()
             }
 
            post{
@@ -136,9 +132,7 @@ spec:
             }
 
             steps{
-                container('jnlp-base') {
-                    CI_FUNCTION()
-                }
+                CI_FUNCTION()
             }
 
             post{
@@ -151,11 +145,9 @@ spec:
 
         stage("Generate CI Report"){
             steps{
-                container('jnlp-base') {
-                    script{
-                        junit testResults: 'results.xml', healthScaleFactor: 1
-                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                    }
+                script{
+                    junit testResults: 'results.xml', healthScaleFactor: 1
+                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
                 }
             }
         }
