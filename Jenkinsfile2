@@ -22,9 +22,14 @@ spec:
     tty: true
   imagePullSecrets: 
   - name: aliyun-registry
-  volumeMounts:
-    - mountPath: /var/run
-      name: docker-sock
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+    name: docker-sock-volume
+  volumes:
+  - name: docker-sock-volume
+    hostPath:
+      path: /var/run/docker.sock
+      type: File
 """
     }
   }
