@@ -40,12 +40,10 @@ spec:
   }
 
   stages{
-  container('jnlp-base') {
       stage("Eigen-PR-CI"){
           steps{
             sh "echo hellow"
           }
       }
-    }
   }
 }
