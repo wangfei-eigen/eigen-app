@@ -44,6 +44,9 @@ spec:
           steps{
             sh "echo hellow"
 	    sh "id;pwd"
+	    sh "ls -l /opt/k8s-deploy/configGenerator"
+            sh "ls -l /opt/k8s-deploy/k8sdeploy"
+            sh "ls -l /opt/k8s-deploy/config" 
           }
       }
   }
