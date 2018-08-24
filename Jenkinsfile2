@@ -5,7 +5,7 @@ pipeline{
   agent {
     kubernetes {
       label 'k8s-jnlp-test'
-      defaultContainer 'registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave'
+      defaultContainer 'jnlp'
 
       yaml """
 apiVersion: v1
