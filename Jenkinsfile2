@@ -38,8 +38,8 @@ spec:
 
   stages {
     stage('test') {
-      container('jnlp-base') {
-        steps {
+      steps {
+        container('jnlp-base') {
           sh 'echo hellow'
           sh "pwd"
           sh "id"
