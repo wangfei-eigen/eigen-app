@@ -33,7 +33,9 @@ spec:
           sh 'echo hellow'
           sh "pwd"
           sh "id"
-          sh "kubectl get node"
+          sh "ls -l /opt/k8s-deploy/config"
+          sh "ls -l /opt/k8s-deploy/configGenerator"
+          
           sh "sleep 600"
         }
       }
