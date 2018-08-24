@@ -1,4 +1,61 @@
-pipeline {
+#!/usr/bin/env groovy
+// set github commit status 
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "${GIT_URL}"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
+// Send Mail and DingDing
+void SEND_MAIL_DD() {
+    // mail
+    script{
+      emailext subject: '$DEFAULT_SUBJECT',
+            body: '$DEFAULT_CONTENT',
+            recipientProviders: [
+                [$class: 'CulpritsRecipientProvider'],
+                [$class: 'DevelopersRecipientProvider'],
+                [$class: 'RequesterRecipientProvider']
+            ], 
+            replyTo: '$DEFAULT_REPLYTO',
+            to: '$DEFAULT_RECIPIENTS'
+    }
+    // DingDing
+}
+
+// PR-CI
+void PR_CI_FUNCTION() {
+    sh '''
+        pip3 install -r requirements.txt
+        py.test --junitxml results.xml --cov webserver --cov-report=xml
+    ''' 
+}
+
+// CI
+void CI_FUNCTION() {
+    sh ''' 
+        pip3 install -r requirements.txt
+        python3 -m unittest wangfei.py
+    ''' 
+}
+
+//CD DEPLOY
+void CD_DEPLOY_FUNCTION() {
+    sh ''' 
+        test -f /tmp/wangfei.yaml || exit 20
+        /opt/bin/kubectl -s 10.10.14.111:8080 delete -f /tmp/wangfei.yaml
+        /opt/bin/kubectl -s 10.10.14.111:8080 create -f /tmp/wangfei.yaml
+    ''' 
+}
+
+//
+
+pipeline{
+   // agent none
   agent {
     kubernetes {
       label 'k8s-jnlp-test'
@@ -36,18 +93,71 @@ spec:
     }
   }
 
-  stages {
-    stage('test') {
-      steps {
-        container('jnlp-base') {
-          sh 'echo hellow'
-          sh "pwd"
-          sh "id"
-          sh "ls -l /opt/k8s-deploy/config"
-          sh "ls -l /opt/k8s-deploy/configGenerator"
-          sh "sleep 600"
-        }
-      }
+
+    environment{
+        APPNAME = "eigen-app-test"
     }
-  }
+    
+    stages{
+
+        stage("Pull Code"){
+            steps{
+                container('jnlp-base') {
+                    sh "git clean -fdx"
+                    checkout scm
+                }
+            }
+        }
+
+        // PR-CI ; all branch
+        stage("Eigen-PR-CI"){
+
+            steps{
+                container('jnlp-base') {
+                    // ci build
+                    PR_CI_FUNCTION()
+                }
+            }
+
+           post{
+                always{
+                    // send msg
+                    SEND_MAIL_DD()
+                }
+           }
+        }
+
+        //Dev-CI
+        stage("Eigen-CI-Dev"){
+
+            when{
+                //branch 'dev'
+                environment name: 'GIT_BRANCH', value: 'origin/dev'
+            }
+
+            steps{
+                container('jnlp-base') {
+                    CI_FUNCTION()
+                }
+            }
+
+            post{
+                always{
+                    // send msg
+                    SEND_MAIL_DD()
+                }
+            }   
+        }
+
+        stage("Generate CI Report"){
+            steps{
+                container('jnlp-base') {
+                    script{
+                        junit testResults: 'results.xml', healthScaleFactor: 1
+                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                    }
+                }
+            }
+        }
+    }
 }
