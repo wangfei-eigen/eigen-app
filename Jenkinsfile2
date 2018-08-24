@@ -23,8 +23,8 @@ spec:
   imagePullSecrets: 
   - name: aliyun-registry
   volumeMounts:
-    - mountPath: /var/run/docker.sock
-      name: docerk-sock
+    - mountPath: /var/run
+     name: docker-sock
 """
     }
   }
