@@ -5,7 +5,7 @@ pipeline{
   agent {
     kubernetes {
       label 'k8s-jnlp-test'
-      defaultContainer 'eigen-jnlp-slave'
+      defaultContainer 'registry-vpc.cn-hangzhou.aliyuncs.com/eigenlab/eigen-jnlp-slave'
 
       yaml """
 apiVersion: v1
@@ -39,11 +39,13 @@ spec:
     }
   }
 
-    stages{
-        stage("Eigen-PR-CI"){
-            steps{
-              sh "echo hellow"
-            }
-        }
+  stages{
+  container('jnlp-base') {
+      stage("Eigen-PR-CI"){
+          steps{
+            sh "echo hellow"
+          }
+      }
     }
+  }
 }
