@@ -1,0 +1,25 @@
+deploy:
+  meta:
+    name: dcrawl-server
+    owner: nikan
+  deployment:
+    replica: 1
+    port: 
+      - 9000
+    command:
+      - python3
+      - -m
+      - --port
+      - "9000"
+    health:
+      active: true
+      path: /api/v1/projects
+  ingress:
+    domainnames:
+      - namespace: dev
+        value: alpha-crawl-hook.aidigger.com
+      - namespace: production
+        value: crawl-hook.aidigger.com
+    path: /hooks
+    options:
+      - 'ingress.kubernetes.io/proxy-body-size: 20m'
